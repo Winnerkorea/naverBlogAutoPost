@@ -1,3 +1,8 @@
 /make_img
 /node_modules
+/src/config
+/session
 .env
+
+*_session.json
+*.jpg
