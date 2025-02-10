@@ -8,19 +8,16 @@ const fsPromises = fs.promises;
 const path = require("path");
 const FormData = require("form-data");
 const xml2js = require("xml2js");
-const { wrapper } = require("axios-cookiejar-support");
-const { CookieJar } = require("tough-cookie");
 const { v4: uuidv4 } = require("uuid");
 
-const USER_ID = process.env.NAVER_USER_ID; // 네이버 아이디 (더 이상 사용하지 않음)
-const USER_PASSWORD = process.env.NAVER_USER_PASSWORD; // 네이버 비밀번호 (더 이상 사용하지 않음)
-const BLOG_ID = process.env.NAVER_BLOG_ID; // 블로그 이름 (더 이상 사용하지 않음)
-const CATEGORY_ID = process.env.NAVER_CATEGORY_ID; // 포스팅할 카테고리 번호 (더 이상 사용하지 않음)
-const OPEN_TYPE = process.env.NAVER_OPEN_TYPE; // 0: 비공개, 2: 공개 (더 이상 사용하지 않음)
+const WORDPRESS_SITE_URL = process.env.WORDPRESS_SITE_URL; // 워드프레스 사이트 주소
+const WORDPRESS_USERNAME = process.env.WORDPRESS_USERNAME; // 워드프레스 사용자 이름
+const WORDPRESS_PASSWORD = process.env.WORDPRESS_PASSWORD; // 워드프레스 비밀번호 또는 Application Password
+const WORDPRESS_CATEGORY_ID = process.env.WORDPRESS_CATEGORY_ID; // 워드프레스 카테고리 ID
+const WORDPRESS_POST_STATUS = process.env.WORDPRESS_POST_STATUS || "publish"; // 포스트 상태 (publish, draft 등), 기본값: publish
 
 const RESULT_FILE = path.join(__dirname, "result.json");
 const MAKE_IMG_DIR = path.join(__dirname, "make_img");
-const OUTPUT_TXT_FILE = path.join(__dirname, "output.txt"); // 생성될 텍스트 파일 경로
 
 const resultData = JSON.parse(fs.readFileSync(RESULT_FILE, "utf8"));
 
@@ -59,203 +56,115 @@ const title = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
 
 console.log(title); // 생성된 제목을 출력
 
-// 본문 내용 생성 (HTML -> 텍스트)
-let content = "";
-Object.values(resultData).forEach((restaurant, index) => {
-  content += `${index + 1}. ${restaurant.name}\n`; // 맛집 번호 및 이름
-  content += `${restaurant.here}\n`; // 위치 정보
-  content += `[Image: ${restaurant.name}]\n`; // 이미지 표시 (실제 이미지 파일은 저장하지 않음)
-  content += `${restaurant.introduction}\n\n`; // 소개글
-});
+// 워드프레스 HTML 콘텐츠 생성 함수
+async function createWordPressContent(uploadedImages, title, content) {
+  let postContent = `<h1>${title}</h1>\n`; // 제목 (h1 태그 사용)
 
-// selectedItem 설정 (더 이상 HTML 콘텐츠를 사용하지 않으므로 텍스트 콘텐츠로 변경)
-const selectedItem = {
-  textContent: content, // 텍스트 콘텐츠 저장
-  naver_content: resultData,
-};
-
-// 이모티콘 리스트 (더 이상 사용하지 않음)
-const emoticonUrls = [
-  {
-    packCode: "cafe_001",
-    seq: 2,
-    src: "https://storep-phinf.pstatic.net/cafe_001/original_2.gif",
-  },
-  // ... (이모티콘 리스트는 제거하거나 주석 처리) ...
-];
-
-function extractTitle(content) {
-  const match = content.match(/<h1[^>]*>(.*?)<\/h1>/i);
-  return match ? removeHtmlTags(match[1]) : "";
-}
-
-function removeHtmlTags(html) {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-const SESSION_FILE = path.join(__dirname, `${USER_ID}_session.json`);
-const BASE_URL = "https://blog.naver.com";
-const BLOG_FILES_URL = "https://blogfiles.pstatic.net";
-
-// 로그인 함수 (더 이상 사용하지 않음)
-async function naver_login(accountList) {
-  // ... (naver_login 함수 내용은 제거하거나 주석 처리) ...
-}
-
-async function checkAndRunLoginScript() {
-  // ... (checkAndRunLoginScript 함수 내용은 제거하거나 주석 처리) ...
-}
-
-async function performLogin() {
-  // ... (performLogin 함수 내용은 제거하거나 주석 처리) ...
-}
-
-//user agent 세팅 (더 이상 사용하지 않음)
-const USER_AGENTS = [
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-];
-
-function getRandomUserAgent() {
-  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-}
-
-const jar = new CookieJar();
-const client = wrapper(
-  axios.create({ jar, headers: { "User-Agent": getRandomUserAgent() } })
-);
-
-function parseXML(xml) {
-  return new Promise((resolve, reject) => {
-    xml2js.parseString(xml, (err, result) => {
-      if (err) reject(err);
-      else resolve(result);
-    });
-  });
-}
-
-// 발행 전 토큰 받아오기 (더 이상 사용하지 않음)
-async function getToken() {
-  // ... (getToken 함수 내용은 제거하거나 주석 처리) ...
-}
-
-// 이미지 세션 (더 이상 사용하지 않음)
-async function getSessionKey(token) {
-  // ... (getSessionKey 함수 내용은 제거하거나 주석 처리) ...
-}
-
-// 이미지 업로드 (더 이상 사용하지 않음)
-async function uploadImage(sessionKey, imagePath) {
-  // ... (uploadImage 함수 내용은 제거하거나 주석 처리) ...
-}
-
-function getRandomTime(min, max) {
-  // 분 단위를 초 단위로 변환
-  const minSeconds = min * 60;
-  const maxSeconds = max * 60;
-  // 최소값과 최대값 사이의 랜덤한 초 값을 반환
-  return Math.floor(Math.random() * (maxSeconds - minSeconds + 1)) + minSeconds;
-}
-
-// 랜덤 페이지 체류 시간 (더 이상 사용하지 않음)
-function getRandomStayTime() {
-  return getRandomTime(100, 150);
-}
-
-// 랜덤 타이핑 시간 (더 이상 사용하지 않음)
-function getRandomTypingTime() {
-  return getRandomTime(70, 90);
-}
-
-function processContent(content) {
-  const $ = cheerio.load(content);
-  let naver_content = {};
-  let index = 1;
-
-  $("article.blog-post")
-    .children()
-    .each((i, element) => {
-      if (
-        element.name === "h1" ||
-        element.name === "h2" ||
-        element.name === "div"
-      ) {
-        if (element.name === "div") {
-          $(element)
-            .children()
-            .each((j, child) => {
-              naver_content[index++] = $.html(child).trim();
-            });
-        } else {
-          naver_content[index++] = $.html(element).trim();
-        }
-      }
-    });
-
-  return naver_content;
-}
-
-function createImageComponent(image) {
-  // ... (createImageComponent 함수 내용은 제거하거나 주석 처리) ...
-  return {}; // 빈 객체 반환으로 변경
-}
-
-// 워드 프로세서 (.txt) 파일 내용 생성 함수
-async function createPlainTextContent(title, content) {
-  let plainTextContent = `${title}\n\n`; // 제목 추가
-
-  // hello_content 처리
+  // hello_content 처리 (예시, 필요에 따라 구조 변경)
   const helloContentItem = content.find(
     (item) => item.type === "hello_content"
   );
   if (helloContentItem && helloContentItem.content) {
-    plainTextContent += `${helloContentItem.content}\n\n`;
+    postContent += `<p><b>${helloContentItem.content}</b></p>\n`; // 굵게 표시
   }
 
-  let index = 0;
-  content.forEach((item) => {
+  let imageIndex = 0;
+  content.forEach((item, index) => {
     if (item.keyword) {
-      index++;
-      plainTextContent += `${index}. ${item.name}\n`; // 맛집 번호 및 이름
-      plainTextContent += `위치: ${item.here}\n`; // 위치 정보
-      plainTextContent += `이미지: [Image of ${item.name}]\n`; // 이미지 placeholder
-      plainTextContent += `소개: ${item.introduction}\n\n`; // 소개글
-      plainTextContent += "---\n\n"; // 구분선 추가
+      postContent += `<h2>${index + 1}. ${item.name}</h2>\n`; // 맛집 이름 (h2 태그)
+      if (imageIndex < uploadedImages.length) {
+        postContent += `<img src="${uploadedImages[imageIndex].url}" alt="${item.name}" style="max-width: 600px;">\n`; // 이미지 삽입, 최대 너비 설정
+        imageIndex++;
+      }
+      postContent += `<p><b>${item.here}</b></p>\n`; // 위치 정보 굵게
+      postContent += `<p>${item.introduction}</p>\n`; // 소개글
+      postContent += `<hr>\n`; // 구분선 (hr 태그)
     }
   });
 
-  // content 내용 처리
+  // content 내용 처리 (예시, 필요에 따라 구조 변경)
   const contentItem = content.find((item) => item.type === "content");
   if (contentItem && contentItem.content) {
-    plainTextContent += `${contentItem.content}\n`;
+    postContent += `<p style="font-family: 'nanumdasisijaghae'; font-size: 19px;">${contentItem.content}</p>\n`; // 스타일 적용
   }
 
-  return plainTextContent;
+  return postContent; // HTML 문자열 반환
 }
 
-function createPopulationParams(
-  uploadedImages,
-  autoSaveNo = null,
-  logNo = null
-) {
-  // ... (createPopulationParams 함수 내용은 제거하거나 주석 처리) ...
-  return {}; // 빈 객체 반환으로 변경
+// 워드프레스 이미지 업로드 함수
+async function uploadWordPressMedia(imagePath) {
+  const formData = new FormData();
+  formData.append("file", fs.createReadStream(imagePath), {
+    filename: path.basename(imagePath),
+  });
+
+  const config = {
+    method: "post",
+    url: `${WORDPRESS_SITE_URL}/wp-json/wp/v2/media`,
+    headers: {
+      ...formData.getHeaders(),
+      // Content-Disposition 헤더 값 수정 (filename* 방식으로 변경)
+      "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(
+        path.basename(imagePath)
+      )}`,
+      Authorization: `Basic ${Buffer.from(
+        `${WORDPRESS_USERNAME}:${WORDPRESS_PASSWORD}`
+      ).toString("base64")}`,
+    },
+    data: formData,
+  };
+
+  try {
+    const response = await axios(config);
+    return response.data; // 워드프레스 미디어 객체 반환 (URL 정보 포함)
+  } catch (error) {
+    console.error("워드프레스 이미지 업로드 오류:", error);
+    if (error.response) {
+      console.error("응답 상태:", error.response.status);
+      console.error("응답 데이터:", error.response.data);
+    }
+    throw error;
+  }
 }
 
-async function autoSave(documentModel, populationParams) {
-  // ... (autoSave 함수 내용은 제거하거나 주석 처리) ...
-  return {}; // 빈 객체 반환으로 변경
+// 워드프레스 포스트 작성 함수
+async function createWordPressPost(title, contentHTML, uploadedMediaIds) {
+  // uploadedMediaIds: 업로드된 미디어 ID 배열
+  const postData = {
+    title: title,
+    content: contentHTML,
+    categories: [WORDPRESS_CATEGORY_ID], // 카테고리 설정
+    status: WORDPRESS_POST_STATUS, // 포스트 상태 설정 (publish, draft 등)
+    featured_media:
+      uploadedMediaIds.length > 0 ? uploadedMediaIds[0].id : undefined, // 대표 이미지 설정 (첫 번째 이미지), 이미지가 있을 경우에만 설정
+  };
+
+  const config = {
+    method: "post",
+    url: `${WORDPRESS_SITE_URL}/wp-json/wp/v2/posts`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${Buffer.from(
+        `${WORDPRESS_USERNAME}:${WORDPRESS_PASSWORD}`
+      ).toString("base64")}`, // Basic Authentication 예시
+    },
+    data: postData,
+  };
+
+  try {
+    const response = await axios(config);
+    return response.data; // 워드프레스 포스트 객체 반환
+  } catch (error) {
+    console.error("워드프레스 포스트 작성 오류:", error);
+    if (error.response) {
+      console.error("응답 상태:", error.response.status);
+      console.error("응답 데이터:", error.response.data);
+    }
+    throw error;
+  }
 }
 
-async function publishPost(autoSaveNo, documentModel, populationParams) {
-  // ... (publishPost 함수 내용은 제거하거나 주석 처리) ...
-  return {}; // 빈 객체 반환으로 변경
-}
-
-// 게시글을 모두 올리고 이미지 폴더 내용 삭제 함수 (이미지 업로드 및 삭제 로직은 변경되었으므로 수정 필요)
+// 게시글을 모두 올리고 이미지 폴더 내용 삭제 함수 (유지)
 async function deleteImagesInMakeImgDir() {
   try {
     const files = await fsPromises.readdir(MAKE_IMG_DIR);
@@ -276,7 +185,17 @@ async function main() {
 
   while (retryCount < maxRetries) {
     try {
-      // ... (로그인 및 세션 관련 코드는 모두 제거) ...
+      // make_img 폴더 경로 로그 추가
+      console.log("make_img 폴더 경로:", MAKE_IMG_DIR);
+
+      // make_img 폴더 내용 확인 및 로그 추가
+      try {
+        const filesInMakeImgDir = fs.readdirSync(MAKE_IMG_DIR);
+        console.log("make_img 폴더 내용:", filesInMakeImgDir); // 폴더 내용 로그
+      } catch (readDirError) {
+        console.error("make_img 폴더 읽기 오류:", readDirError);
+        throw readDirError; // 폴더 읽기 오류 발생 시, 즉시 에러 처리
+      }
 
       // 이미지 파일 목록 확인 및 필터링 (기존 코드 유지)
       const imageFiles = fs
@@ -288,37 +207,65 @@ async function main() {
           return fullPath;
         });
 
+      // 필터링된 이미지 파일 목록 로그 추가
       console.log("Processed image files:", imageFiles);
 
-      // make_img 폴더의 이미지 업로드 (더 이상 업로드하지 않음)
-      const uploadedImages = []; // 빈 배열로 변경
+      // make_img 폴더의 이미지 업로드 (워드프레스 이미지 업로드 함수 사용)
+      const uploadedImages = await Promise.all(
+        imageFiles.map(async (imagePath) => {
+          try {
+            const result = await uploadWordPressMedia(imagePath); // 워드프레스 이미지 업로드 함수 호출
+            return result;
+          } catch (error) {
+            console.error(`워드프레스 이미지 업로드 실패: ${imagePath}`, error);
+            return null; // 업로드 실패 시 null 반환
+          }
+        })
+      ).then((images) => images.filter((img) => img !== null)); // null 값 필터링
 
-      // info.gif 파일 업로드 (더 이상 업로드하지 않음)
-      // ... (info.gif 파일 처리 로직 제거) ...
+      console.log("업로드된 이미지:", uploadedImages);
 
-      console.log("업로드된 이미지:", uploadedImages); // 빈 배열 출력
+      // HTML 콘텐츠 생성 (워드프레스 HTML 콘텐츠 생성 함수 사용)
+      const contentHTML = await createWordPressContent(
+        uploadedImages,
+        title,
+        resultData
+      );
 
-      // 내용 처리 (HTML -> 텍스트 함수는 더 이상 필요 없음. selectedItem.textContent 사용)
-      // const naver_content = processContent(selectedItem.resultContent); // 제거
+      // 워드프레스 포스트 작성 (워드프레스 포스트 작성 함수 사용)
+      const publishResult = await createWordPressPost(
+        title,
+        contentHTML,
+        uploadedImages
+      ); // uploadedImages는 필요에 따라 미디어 ID 배열로 가공하여 전달
 
-      // 워드 프로세서(.txt) 파일 내용 생성 함수 호출
-      const plainTextContent = await createPlainTextContent(title, resultData);
+      if (publishResult && publishResult.id) {
+        // 워드프레스는 포스트 ID를 반환
+        console.log(
+          "워드프레스 포스트 발행 성공. 포스트 ID:",
+          publishResult.id
+        );
+        console.log("워드프레스 포스트 URL:", publishResult.link); // 워드프레스는 포스트 URL을 link 필드에 반환
 
-      // 텍스트 파일로 저장
-      fs.writeFileSync(OUTPUT_TXT_FILE, plainTextContent, "utf8");
-      console.log(`워드 프로세서 파일(.txt) 생성 완료: ${OUTPUT_TXT_FILE}`);
-
-      // 이미지 업로드 후 make_img 폴더 내 파일 삭제 (이미지 업로드 로직 제거되었으므로 삭제 로직만 유지)
-      await deleteImagesInMakeImgDir();
+        // 이미지 업로드 후 make_img 폴더 내 파일 삭제 (**삭제**: 이 부분 제거)
+        // await deleteImagesInMakeImgDir();
+      } else {
+        console.error("워드프레스 포스트 발행 실패");
+        console.error(publishResult);
+        throw new Error("워드프레스 포스트 발행 실패");
+      }
 
       break; // 성공적으로 실행되면 루프 종료
     } catch (error) {
       console.error("오류 발생:", error);
-      // ... (오류 처리 로직은 필요에 따라 유지 또는 수정) ...
+      if (error.response) {
+        console.error("응답 상태:", error.response.status);
+        console.error("응답 데이터:", error.response.data);
+      }
 
       if (
         error.message.includes("ENOENT: no such file or directory")
-        // ... (세션 만료 및 로그인 관련 오류 조건 제거) ...
+        // ... (워드프레스 관련 오류 외 다른 오류 조건 필요시 추가) ...
       ) {
         console.log("파일을 찾을 수 없습니다. 파일 경로를 확인해주세요.");
         retryCount++;

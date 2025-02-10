@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 초기 타이틀 (자바스크립트에서 변경됩니다.) -->
+    <title>랜덤 타이틀</title>
+    <style>
+      /* 기본 스타일 */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      .section {
+        margin-bottom: 30px;
+      }
+      .section h2 {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+      }
+      .entry {
+        border: 1px solid #eee;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      img {
+        max-width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 랜덤 타이틀이 들어갈 대제목 -->
+    <h1 id="main-title">타이틀 로딩 중...</h1>
+
+    <!-- 소개글 영역: type === "hello_content" -->
+    <div id="intro-section" class="section">
+      <h2>Introduction</h2>
+      <div id="intro-content"></div>
+    </div>
+
+    <!-- 메인 글 영역: type === "content" -->
+    <div id="main-section" class="section">
+      <h2>메인 글</h2>
+      <div id="main-content"></div>
+    </div>
+
+    <!-- 기본 항목 영역: 위 두 타입이 아닌 나머지 항목 -->
+    <div id="default-section" class="section">
+      <h2>기본 항목</h2>
+      <div id="default-content"></div>
+    </div>
+
+    <script>
+      // DOMContentLoaded 이벤트 내에서 모든 스크립트를 실행합니다.
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. result.json 파일을 fetch API를 이용해 불러오기
+        fetch("./result.json")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("네트워크 응답이 올바르지 않습니다.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("불러온 데이터:", data);
+
+            // fetch로 불러온 데이터를 기반으로 restaurantCount 계산
+            // 예시: item.keyword가 truthy한 항목의 개수를 센다.
+            const restaurantCount = Object.values(data).filter(
+              (item) => item.keyword
+            ).length;
+
+            // 필요한 다른 변수들
+            const location = "Seoul";
+            const foodName = "Korean BBQ";
+
+            // 제목 템플릿 15개 생성
+            const titleTemplates = [
+              `${location} Foodie Guide: ${restaurantCount} Must-Try ${foodName} Spots in Korea`,
+              `Explore ${location}: ${restaurantCount} Top ${foodName} Restaurants to Try in Korea`,
+              `Korea's Hidden Gems: ${restaurantCount} Unmissable ${foodName} Eateries in ${location}`,
+              `Your Ultimate ${location} ${foodName} Tour: ${restaurantCount} Must-Visit Restaurants in Korea`,
+              `Taste Korea: Discover ${restaurantCount} Essential ${foodName} Spots in ${location}`,
+              `Don't Miss Out: ${restaurantCount} Amazing ${foodName} Restaurants in ${location}, Korea`,
+              `Insider's Pick: ${restaurantCount} Best ${foodName} Places in ${location} for Korean Food Lovers`,
+              `The ${restaurantCount} Best ${foodName} Restaurants in ${location} You Must Experience in Korea`,
+              `A Food Lover's Journey: ${restaurantCount} Unforgettable ${foodName} Spots in ${location}, Korea`,
+              `Discover ${location}: ${restaurantCount} Top ${foodName} Eateries for an Authentic Korean Experience`,
+              `Korea Calling: ${restaurantCount} ${foodName} Restaurants in ${location} to Savor Right Now`,
+              `${location} on a Plate: ${restaurantCount} Delicious ${foodName} Spots for Your Korean Adventure`,
+              `Ultimate ${location} ${foodName} Guide: ${restaurantCount} Places You Can't Miss in Korea`,
+              `Experience ${location}: ${restaurantCount} Must-See ${foodName} Restaurants for a True Taste of Korea`,
+              `Foodie Favorites: ${restaurantCount} Top ${foodName} Spots in ${location} for Your Korean Trip`,
+            ];
+
+            // 템플릿 배열에서 랜덤 인덱스를 선택하여 타이틀 생성
+            const randomIndex = Math.floor(
+              Math.random() * titleTemplates.length
+            );
+            const chosenTitle = titleTemplates[randomIndex];
+
+            // 브라우저 탭의 제목과 페이지 상단의 h1 요소에 적용
+            document.title = chosenTitle;
+            document.getElementById("main-title").textContent = chosenTitle;
+
+            // 데이터를 각 영역에 표시하는 함수 호출
+            displayData(data);
+          })
+          .catch((error) => {
+            console.error("JSON 파일 로드 실패:", error);
+            document.getElementById("intro-content").textContent =
+              "데이터 로드에 실패했습니다.";
+            document.getElementById("main-content").textContent =
+              "데이터 로드에 실패했습니다.";
+            document.getElementById("default-content").textContent =
+              "데이터 로드에 실패했습니다.";
+          });
+
+        // 2. 데이터를 각 영역에 표시하는 함수
+        function displayData(data) {
+          // 영역 컨테이너 가져오기 및 초기화
+          const introContainer = document.getElementById("intro-content");
+          const mainContainer = document.getElementById("main-content");
+          const defaultContainer = document.getElementById("default-content");
+          introContainer.innerHTML = "";
+          mainContainer.innerHTML = "";
+          defaultContainer.innerHTML = "";
+
+          // (1) 소개글 영역: type이 "hello_content"인 요소의 content 출력
+          const helloItems = data.filter(
+            (item) => item.type === "hello_content"
+          );
+          helloItems.forEach((item) => {
+            const p = document.createElement("p");
+            p.textContent = item.content;
+            introContainer.appendChild(p);
+          });
+
+          // (2) 메인 글 영역: type이 "content"인 요소의 content 출력
+          const contentItems = data.filter((item) => item.type === "content");
+          contentItems.forEach((item) => {
+            const p = document.createElement("p");
+            p.textContent = item.content;
+            mainContainer.appendChild(p);
+          });
+
+          // (3) 기본 항목 영역: type이 "hello_content"나 "content"가 아닌 나머지 요소들에 대해,
+          //     제목(name), 소개글(introduction), 이미지를 출력합니다.
+          const defaultItems = data.filter(
+            (item) => item.type !== "hello_content" && item.type !== "content"
+          );
+          defaultItems.forEach((item) => {
+            const entryDiv = document.createElement("div");
+            entryDiv.classList.add("entry");
+
+            entryDiv.innerHTML = `<h2>${item.name}</h2>
+                                  <p>${item.introduction}</p>
+                                  <img src="${item.imageUrl}" alt="${item.name}">`;
+            defaultContainer.appendChild(entryDiv);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

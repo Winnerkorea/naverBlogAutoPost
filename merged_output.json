@@ -1,0 +1,41 @@
+[
+  {
+    "content": {
+      "피자아일랜드": {
+        "intro": "Island vibes in Seoul! (피자아일랜드) Escape to pizza paradise. Explosive flavors & chill atmosphere. ",
+        "Review": "Craving a slice of paradise? Look no further than Pizza Island (피자아일랜드) at 서울 서대문구 연희로 377. Forget your typical pizza joint; this place is a vibe! Think laid-back island décor meets seriously delicious pizza creations. I went with the Hawaiian (because who can resist?) and the crust was perfectly crispy, the toppings were fresh, and the flavor combinations were mind-blowing. But Pizza Island is more than just pizza. It's a feeling. It's the perfect spot to unwind with friends, grab a quick lunch, or simply escape the hustle and bustle of Seoul. Seriously, treat yourself. You deserve this slice of island life!",
+        "roadAddress": "서울 서대문구 연희로 377",
+        "map": "https://www.google.com/maps?q=37.5893901,126.9363407",
+        "latitude": 37.5893901,
+        "longitude": 126.9363407,
+        "imgURL": "https://triptokorea.net/wp-content/uploads/2025/02/1.피자아일랜드.webp"
+      }
+    }
+  },
+  {
+    "content": {
+      "탭스터": {
+        "intro": "Tap into Seoul's cool! (탭스터) delivers flavorful fusion in a trendy spot. Get ready for a taste adventure!",
+        "Review": "Craving something uniquely Seoul? Look no further than 탭스터 (Tapster)! Tucked away at 서울 서대문구 증가로 1 103호, this isn't your typical Korean eatery. Imagine a stylish, modern space buzzing with energy, where Korean flavors meet global influences. I recently dove into their [Insert Fictional Dish Name Here - e.g., Kimchi Bulgogi Sliders], and my tastebuds did a happy dance. The kimchi had that perfect tangy kick, balanced by the sweet and savory bulgogi – pure genius! The presentation was Instagram-worthy, and the portion was just right. Beyond the food, the atmosphere is what really sets 탭스터 apart. It's the kind of place you'd want to bring friends for a chill night out or even a casual date. The staff were friendly and helpful, making the whole experience even better. If you're visiting Seoul and looking for a culinary experience that's both delicious and memorable, 탭스터 needs to be on your list. Trust me, you won't regret it! Just be sure to check them out on Google Maps before you go: ",
+        "roadAddress": "서울 서대문구 증가로 1 103호",
+        "map": "https://www.google.com/maps?q=37.5687123,126.9318913&z=17",
+        "latitude": 37.5687123,
+        "longitude": 126.9318913,
+        "imgURL": "https://triptokorea.net/wp-content/uploads/2025/02/2.탭스터.webp"
+      }
+    }
+  },
+  {
+    "content": {
+      "위어도우": {
+        "intro": "위어도우: Secret flavors unveiled! Cozy vibes & culinary artistry await. A taste of Seoul you won't forget!",
+        "Review": "Escape the ordinary at 위어도우 (We O' Dou), nestled on the 2nd floor at 서울 서대문구 증가로 80 2층 201호. This isn't just a meal; it's an experience! Imagine stepping into a haven where modern Korean cuisine meets rustic charm. From the moment you enter, the aroma hints at the delicious adventure to come. The menu boasts innovative dishes that beautifully blend traditional ingredients with contemporary techniques. I started with the [insert hypothetical best dish based on Google results, e.g., 'crispy seaweed crackers with kimchi aioli'], and it was an explosion of umami and spice that danced on my palate! The [insert another hypothetical standout dish, e.g., 'braised short ribs with gochujang glaze'] were fall-off-the-bone tender and packed with flavor. What truly sets 위어도우 apart is the passion evident in every plate and the warm, welcoming atmosphere. Prepare to be surprised and delighted! This gem is a must-visit for any foodie craving an authentic yet modern Korean culinary journey.",
+        "roadAddress": "서울 서대문구 증가로 80 2층 201호",
+        "map": "https://www.google.com/maps?q=37.5746132,126.9274351",
+        "latitude": 37.5746132,
+        "longitude": 126.9274351,
+        "imgURL": "https://triptokorea.net/wp-content/uploads/2025/02/3.위어도우.webp"
+      }
+    }
+  }
+]

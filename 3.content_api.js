@@ -1,185 +1,167 @@
 require("dotenv").config();
-
 const fs = require("fs").promises;
 const path = require("path");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// 제미나이 API키를 넣어주세요
+// ---------------------------------------------------
+// 1) Gemini API 초기화
+// ---------------------------------------------------
 const geminiApiKey = process.env.GEMINI_API_KEY;
 const geminiClient = new GoogleGenerativeAI(geminiApiKey);
 
-async function readResultJson() {
+/**
+ * JSON 파일을 읽어 파싱하는 함수
+ * @param {string} filename - 읽어올 JSON 파일 이름
+ * @returns {Promise<object|array>} 파싱된 JSON 데이터
+ */
+async function readJsonFile(filename) {
   try {
-    const data = await fs.readFile(path.join(__dirname, "result.json"), "utf8");
+    const data = await fs.readFile(path.join(__dirname, filename), "utf8");
     return JSON.parse(data);
   } catch (err) {
-    console.error("result.json 파일을 읽는 데 실패했습니다:", err);
+    console.error(`${filename} 파일을 읽는 중 오류 발생:`, err);
     throw err;
   }
 }
 
-async function writeResultJson(data) {
+/**
+ * 데이터를 JSON 파일로 저장하는 함수
+ * @param {string} filename - 저장할 JSON 파일 이름
+ * @param {object|array} data - 저장할 데이터
+ */
+async function writeJsonFile(filename, data) {
   try {
     await fs.writeFile(
-      path.join(__dirname, "result.json"),
+      path.join(__dirname, filename),
       JSON.stringify(data, null, 2),
       "utf8"
     );
-    console.log("result.json 파일이 성공적으로 업데이트되었습니다.");
+    console.log(`${filename} 파일이 성공적으로 저장되었습니다.`);
   } catch (err) {
-    console.error("result.json 파일을 쓰는 데 실패했습니다:", err);
+    console.error(`${filename} 파일을 저장하는 데 실패했습니다:`, err);
     throw err;
   }
 }
 
-async function generateRestaurantIntroduction(restaurants) {
+// ---------------------------------------------------
+// 2) Markdown 코드 블록 제거 후처리 함수 (옵션)
+// ---------------------------------------------------
+function cleanJsonResponse(text) {
+  // 만약 텍스트가 백틱 코드 블록(예: ```json)으로 감싸져 있다면 제거
+  if (text.startsWith("```")) {
+    text = text.replace(/^```[^\n]*\n/, ""); // 첫 줄 제거
+    text = text.replace(/\n```$/, ""); // 마지막 백틱 제거
+  }
+  return text.trim();
+}
+
+// ---------------------------------------------------
+// 3) 개별 맛집에 대한 Gemini API 요청 함수 예시
+// ---------------------------------------------------
+/**
+ * 단일 맛집 객체를 입력받아, Gemini API로부터
+ * {
+ *   "title": "...",
+ *   "introduction": "..."
+ * }
+ * 형태의 JSON을 받아오는 예시 함수
+ *
+ * @param {object} restaurant - 맛집 객체
+ * @returns {Promise<object>} { title, introduction } 형태의 JSON 객체
+ */
+async function generateIntroForOneRestaurant(restaurant) {
   const model = geminiClient.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const prompt = `다음은 여러 맛집의 정보입니다. 각 맛집에 대해 자연스럽고 흥미로운 소개글을 작성해주세요. 
-  외국인들을 대상으로 작성하는 블로그 입니다. 영어로 작성해 주세요. 고유명사가 영어 변환이 어려우면 한글로 유지해 주세요.
-  각 소개글은 약 100-150자로 작성하고, 맛집의 이름, 주소, 전화번호를 반드시 포함해야 합니다. 
-  또한, 각 맛집에 대한 창의적이고 매력적인 제목도 함께 제시해주세요.
+  // 프롬프트 예시 (단일 맛집에 대한 소개글)
+  // 주의: 응답은 "title"과 "introduction"만 포함하는 JSON을 반환해야 합니다.
+  // 모델이 다른 키를 반환하지 않도록 '중요' 문구에 명시합니다.
+  const prompt = `Write a short restaurant introduction in English for the following place.
+It must be strictly in JSON format with only two keys: "title" and "introduction".
+No additional text, no markdown. The place info:
+- Name: ${restaurant.name}
+- Address: ${restaurant.roadAddress}
+- Phone: ${restaurant.virtualPhone || restaurant.phone}
 
-  맛집 정보:
-  ${JSON.stringify(restaurants, null, 2)}
-
-  <세션1 (hello_content 키를 만들어서 값을 넣어주세요)> 
-  hello_content: [주제에 맞는 인사말을 200자 내외로 적어주세요.]
-
-
-  <세션2>
-  다음 형식으로 정확히 응답해주세요. 각 맛집 정보 사이에는 반드시 --- 를 넣어 구분해 주세요:
-
-  --- 
-
-  here: [창의적인 제목]
-  introduction: [자연스러운 소개글 및 추천이유]
-
-  ---
-
-  here: [다음 맛집의 창의적인 제목]
-  introduction: [다음 맛집의 자연스러운 소개글 및 추천이유]
-
-  ---
-
-  ...계속...
-
-  <세션3 (content 키를 만들어서 값을 넣어주세요)> 
-  content: [위 내용들을 정리해서 이 음식을 추천하는 이유, 추천대상, 맛, 효능, 사람들의 반응, 재방문 여부, 매장 비교, 등을 반드시 1500자 내외로 창의적으로 작성해주세요.]
-  `;
+Use around 100-150 characters in "introduction". 
+**IMPORTANT**: The output must be valid JSON with:
+{
+  "title": "...",
+  "introduction": "..."
+}
+No extra keys, no code blocks, no markdown.`;
 
   const result = await model.generateContent(prompt);
-  const response = result.response.text();
-  console.log("API 응답:", response); // API 응답 로깅
-  return response;
-}
+  let rawResponse = result.response.text();
 
-// 특수 문자를 제거하는 함수
-function removeSpecialCharacters(text) {
-  if (text === undefined || text === null) {
-    return "";
+  // 코드 블록 제거(옵션)
+  rawResponse = cleanJsonResponse(rawResponse);
+
+  // 파싱 시도
+  let parsed;
+  try {
+    parsed = JSON.parse(rawResponse);
+  } catch (err) {
+    console.error("Gemini 응답을 JSON으로 파싱 실패:", err, rawResponse);
+    // 파싱 실패 시, 임시로 raw를 반환하거나, 기본 값을 반환
+    parsed = { title: "", introduction: rawResponse };
   }
-  return text.replace(/\\|\*+/g, "");
+
+  return parsed;
 }
 
+// ---------------------------------------------------
+// 4) 메인 로직
+// ---------------------------------------------------
 async function main() {
   try {
-    let resultData = await readResultJson();
+    // (1) result.json 파일에서 배열 형태의 맛집 데이터 읽기
+    let resultData = await readJsonFile("result.json");
 
     if (!Array.isArray(resultData)) {
-      console.error("resultData is not an array");
+      console.error("resultData가 배열 형식이 아닙니다.");
       return;
     }
 
-    const restaurantInfos = resultData.map((item) => ({
-      name: item.name,
-      normalizedName: item.normalizedName,
-      category: item.category,
-      roadAddress: item.roadAddress,
-      address: item.address,
-      virtualPhone: item.virtualPhone || item.phone,
-      businessHours: item.businessHours,
-    }));
+    // (2) 각 맛집 객체에 새 필드 추가 및 Gemini API로부터 소개글 생성
+    const updatedRestaurants = [];
+    for (let i = 0; i < resultData.length; i++) {
+      const restaurant = resultData[i];
 
-    const introductionsText = await generateRestaurantIntroduction(
-      restaurantInfos
-    );
+      // 예시: id, openStatus, keyword 등 추가
+      restaurant.id = i + 1;
+      restaurant.openStatus = restaurant.businessHours
+        ? "영업중"
+        : "영업정보없음";
+      restaurant.keyword = "구로1동 낙지볶음"; // 예시 키워드
+      restaurant.rank = i + 1; // 예시 rank
 
-    const sections = introductionsText.split("<세션");
+      // (2-A) Gemini API를 호출하여 개별 소개글(JSON)을 생성
+      // 실제로는 비동기 호출 => 각 객체별 1회 API 호출
+      const geminiIntro = await generateIntroForOneRestaurant(restaurant);
+      // "title", "introduction"만 들어있을 것으로 기대
+      // 사용자 요구 사항에 따라, 배열로 넣을 수도 있고 단일 객체로 넣을 수도 있습니다.
+      // 여기서는 "restaurant_introductions"가 배열인 형태로 예시
+      restaurant.restaurant_introductions = [geminiIntro];
 
-    // hello_content 추출
-    const helloContentMatch = sections[1].match(
-      /hello_content:\s*([\s\S]+?)\n\n/
-    );
-    const helloContent = helloContentMatch
-      ? removeSpecialCharacters(helloContentMatch[1].trim())
-      : "";
-
-    const restaurantIntros = sections[2]
-      .split("---")
-      .map((text) => {
-        const lines = text.trim().split("\n");
-        const intro = {};
-        lines.forEach((line) => {
-          const [key, value] = line.split(":");
-          if (key && value) {
-            intro[key.trim()] = removeSpecialCharacters(value.trim());
-          }
-        });
-        return intro;
-      })
-      .filter((intro) => Object.keys(intro).length > 0);
-
-    // content 값 추출
-    const contentMatch = sections[3].match(/content:\s*([\s\S]+)/);
-    const content = contentMatch
-      ? removeSpecialCharacters(contentMatch[1].trim())
-      : "";
-
-    console.log("파싱된 소개글:", JSON.stringify(restaurantIntros, null, 2));
-    console.log("hello_content:", helloContent);
-    console.log("content:", content);
-
-    if (restaurantIntros.length === 0) {
-      console.error("생성된 소개글이 없습니다.");
-      return;
+      // (2-B) 완성된 객체를 배열에 모음
+      updatedRestaurants.push(restaurant);
     }
 
-    // resultData에 소개글 정보 추가
-    resultData.forEach((item, index) => {
-      if (index < restaurantIntros.length) {
-        if (restaurantIntros[index].here) {
-          item.here = restaurantIntros[index].here;
-        }
-        if (restaurantIntros[index].introduction) {
-          item.introduction = restaurantIntros[index].introduction;
-        }
-      }
-    });
+    // (3) 최종 구조
+    // 질문에서 예시로 준 구조를 따라, "updatedRestaurants" 배열만 포함하는 객체를 생성
+    const finalOutput = {
+      updatedRestaurants,
+    };
 
-    // hello_content 값을 별도의 객체로 추가
-    resultData.push({
-      type: "hello_content",
-      id: "hello-content",
-      content: helloContent,
-    });
-
-    // content 값을 별도의 객체로 추가
-    resultData.push({
-      type: "content",
-      id: "main-content",
-      content: content,
-    });
-
-    // 업데이트된 데이터를 result.json에 저장
-    await writeResultJson(resultData);
-
-    console.log("맛집 소개글 생성 및 result.json 업데이트 완료");
-    console.log("업데이트된 맛집 수:", resultData.length - 2); // hello_content와 content 객체를 제외
+    // (4) posting.json에 저장
+    await writeJsonFile("posting.json", finalOutput);
+    console.log("모든 작업 완료! posting.json 파일을 확인하세요.");
   } catch (error) {
-    console.error("실행 중 오류 발생:", error);
-    console.error("오류 상세:", error.stack);
+    console.error("메인 함수 실행 중 오류:", error);
   }
 }
 
+// ---------------------------------------------------
+// 5) 실행
+// ---------------------------------------------------
 main();

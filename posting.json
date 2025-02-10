@@ -1,0 +1,79 @@
+{
+  "updatedRestaurants": [
+    {
+      "keyword": "구로1동 낙지볶음",
+      "id": 1,
+      "name": "만복영양솥밥",
+      "normalizedName": "만복영양솥밥",
+      "category": "한식",
+      "x": "126.8884275",
+      "y": "37.4944107",
+      "distance": "27km",
+      "roadAddress": "서울 구로구 구로중앙로19길 13",
+      "address": "구로동 85-2",
+      "imageUrl": "https://ldb-phinf.pstatic.net/20190718_146/1563404170316h7ab5_JPEG/jlkoJyUQ55K0uQKneI0ptuKa.jpg",
+      "imageCount": 6,
+      "phone": "02-864-2367",
+      "virtualPhone": null,
+      "businessHours": "토요일 11:00~21:00 매주 일요일 휴무 | 금요일 11:00~21:00 매주 일요일 휴무 | 목요일 11:00~21:00 매주 일요일 휴무 | 수요일 11:00~21:00 매주 일요일 휴무 | 화요일 11:00~21:00 매주 일요일 휴무 | 월요일 11:00~21:00 매주 일요일 휴무",
+      "rank": 1,
+      "openStatus": "영업중",
+      "restaurant_introductions": [
+        {
+          "title": "",
+          "introduction": "{\n  \"title\": \"Manbok Youngyang Sotbap\",\n  \"introduction\": \"Experience authentic Korean cuisine at Manbok Youngyang Sotbap in Guro-gu, Seoul.  Enjoy delicious and nutritious sotbap (mixed grain rice bowls). Call 02-864-2367 to make a reservation.\"\n}\n```"
+        }
+      ]
+    },
+    {
+      "keyword": "구로1동 낙지볶음",
+      "id": 2,
+      "name": "어느바닷가횟집칠일",
+      "normalizedName": "어느바닷가횟집칠일",
+      "category": "포장마차",
+      "x": "126.9006069",
+      "y": "37.4844926",
+      "distance": "27km",
+      "roadAddress": "서울 구로구 디지털로32나길 29 5층",
+      "address": "구로동 1124-47",
+      "imageUrl": "https://ldb-phinf.pstatic.net/20240806_256/1722875051486CYV8N_PNG/%C1%A6%B8%F1%C0%BB_%C0%D4%B7%C2%C7%D8%C1%D6%BC%BC%BF%E4_-001_%282%29.png",
+      "imageCount": 10,
+      "phone": "070-7737-7770",
+      "virtualPhone": null,
+      "businessHours": null,
+      "rank": 2,
+      "openStatus": "영업정보없음",
+      "restaurant_introductions": [
+        {
+          "title": "",
+          "introduction": "{\n  \"title\": \"Eoneu Badatga Hoesijp Chil-il\",\n  \"introduction\": \"Experience fresh seafood at Eoneu Badatga Hoesijp Chil-il in Seoul! Located in Guro-gu, we offer a delightful menu. Call 070-7737-7770 for reservations.  Enjoy the best of Korean seafood.\"\n}\n```"
+        }
+      ]
+    },
+    {
+      "keyword": "구로1동 낙지볶음",
+      "id": 3,
+      "name": "오봉집 신도림점",
+      "normalizedName": "오봉집 신도림점",
+      "category": "한식",
+      "x": "126.8877039",
+      "y": "37.5095178",
+      "distance": "26km",
+      "roadAddress": "서울 구로구 경인로 661 신도림1차푸르지오 1층 148호",
+      "address": "신도림동 337",
+      "imageUrl": "https://ldb-phinf.pstatic.net/20221108_196/1667880323803PjqTw_JPEG/%BF%C0%BA%C0%C1%FD_%C7%C3%B7%B9%C0%CC%BD%BA_%B7%CE%B0%ED.jpg",
+      "imageCount": 4,
+      "phone": null,
+      "virtualPhone": "0507-1392-8266",
+      "businessHours": null,
+      "rank": 3,
+      "openStatus": "영업정보없음",
+      "restaurant_introductions": [
+        {
+          "title": "",
+          "introduction": "{\n  \"title\": \"Obongjip Sindorim\",\n  \"introduction\": \"Experience authentic Korean cuisine at Obongjip Sindorim! Located in the Sindorim 1st Prugio building, we offer delicious and hearty meals.  Call 0507-1392-8266 to make a reservation.\"\n}\n```"
+        }
+      ]
+    }
+  ]
+}
