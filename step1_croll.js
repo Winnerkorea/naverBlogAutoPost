@@ -186,7 +186,7 @@ function getRandomKeyword() {
 
   return {
     keyword: `${locationKr} ${foodKr}`,
-    keywordEn: `${locationEn} ${foodEn}`,
+    keywordEn: `${locationEn} ${foodEn}`, // 영어 검색어 추가
     locationEn: locationEn,
     foodEn: foodEn,
   };
@@ -319,10 +319,11 @@ function safeDecodeURIComponent(str) {
   }
 }
 
-// processResults: 결과에 keyword, locationEn, foodEn 추가
-function processResults(results, keyword, locationEn, foodEn) {
+// processResults: 결과에 keyword, keywordEn, locationEn, foodEn 추가
+function processResults(results, keyword, keywordEn, locationEn, foodEn) {
   return results.map((item, index) => ({
     keyword: keyword,
+    keywordEn: keywordEn, // 영어 검색어 추가
     locationEn: locationEn,
     foodEn: foodEn,
     id: item.id,
@@ -348,7 +349,8 @@ function processResults(results, keyword, locationEn, foodEn) {
 // attemptSearch: 검색어와 영어 정보를 함께 전달하여 결과 처리
 async function attemptSearch() {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const { keyword, locationEn, foodEn } = getRandomKeyword();
+    // keywordEn도 함께 받아오기 위해 구조분해 할당 수정
+    const { keyword, keywordEn, locationEn, foodEn } = getRandomKeyword();
     console.log(`Attempt ${attempt}: Searching for "${keyword}"`);
 
     const results = await getAllResults(keyword);
@@ -358,9 +360,11 @@ async function attemptSearch() {
         const randomIndex = Math.floor(Math.random() * results.length);
         randomResults.push(results.splice(randomIndex, 1)[0]);
       }
+      // keywordEn을 추가하여 processedResults 생성
       const processedResults = processResults(
         randomResults,
         keyword,
+        keywordEn,
         locationEn,
         foodEn
       );
