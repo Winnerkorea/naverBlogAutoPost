@@ -3,181 +3,193 @@ const fs = require("fs");
 
 const a = [
   // 종로구 (Jongno-gu)
-  "종로구 사직동",
-  "종로구 청운동",
-  "종로구 평창동",
-  "종로구 교남동",
-  "종로구 교북동",
-  "종로구 가회동",
-  "종로구 종로",
-  "종로구 혜화동",
-  "종로구 창신동",
-  "종로구 숭인동",
-  "종로구 부암동",
-  "종로구 삼청동",
-  "종로구 익선동",
-  "종로구 누상동",
-  "종로구 누하동",
+  { kr: "종로구 사직동", en: "Sajik-dong, Jongno-gu" },
+  { kr: "종로구 청운동", en: "Cheongun-dong, Jongno-gu" },
+  { kr: "종로구 평창동", en: "Pyeongchang-dong, Jongno-gu" },
+  { kr: "종로구 교남동", en: "Gyonam-dong, Jongno-gu" },
+  { kr: "종로구 교북동", en: "Gyobuk-dong, Jongno-gu" },
+  { kr: "종로구 가회동", en: "Gahoe-dong, Jongno-gu" },
+  { kr: "종로구 종로", en: "Jongno, Jongno-gu" },
+  { kr: "종로구 혜화동", en: "Hyehwa-dong, Jongno-gu" },
+  { kr: "종로구 창신동", en: "Changsin-dong, Jongno-gu" },
+  { kr: "종로구 숭인동", en: "Sungin-dong, Jongno-gu" },
+  { kr: "종로구 부암동", en: "Buam-dong, Jongno-gu" },
+  { kr: "종로구 삼청동", en: "Samcheong-dong, Jongno-gu" },
+  { kr: "종로구 익선동", en: "Ikseon-dong, Jongno-gu" },
+  { kr: "종로구 누상동", en: "Nusang-dong, Jongno-gu" },
+  { kr: "종로구 누하동", en: "Nuha-dong, Jongno-gu" },
 
   // 중구 (Jung-gu)
-  "중구 소공동",
-  "중구 회현동",
-  "중구 묘동",
-  "중구 충무동",
-  "중구 필동",
-  "중구 장충동",
-  "중구 을지로동",
-  "중구 신당동",
-  "중구 남산동",
-  "중구 청파동",
-  "중구 광희동",
+  { kr: "중구 소공동", en: "Sogong-dong, Jung-gu" },
+  { kr: "중구 회현동", en: "Hoehyeon-dong, Jung-gu" },
+  { kr: "중구 묘동", en: "Myo-dong, Jung-gu" },
+  { kr: "중구 충무동", en: "Chungmu-dong, Jung-gu" },
+  { kr: "중구 필동", en: "Pil-dong, Jung-gu" },
+  { kr: "중구 장충동", en: "Jangchung-dong, Jung-gu" },
+  { kr: "중구 을지로동", en: "Euljiro-dong, Jung-gu" },
+  { kr: "중구 신당동", en: "Sindang-dong, Jung-gu" },
+  { kr: "중구 남산동", en: "Namsan-dong, Jung-gu" },
+  { kr: "중구 청파동", en: "Cheongpa-dong, Jung-gu" },
+  { kr: "중구 광희동", en: "Gwanghui-dong, Jung-gu" },
 
   // 서대문구 (Seodaemun-gu)
-  "서대문구 남가좌동",
-  "서대문구 북가좌동",
-  "서대문구 홍제동",
-  "서대문구 신촌동",
-  "서대문구 연희동",
-  "서대문구 홍은동",
-  "서대문구 창천동",
-  "서대문구 남문동",
-  "서대문구 북문동",
-  "서대문구 충현동",
+  { kr: "서대문구 남가좌동", en: "Namgajwa-dong, Seodaemun-gu" },
+  { kr: "서대문구 북가좌동", en: "Bukgajwa-dong, Seodaemun-gu" },
+  { kr: "서대문구 홍제동", en: "Hongje-dong, Seodaemun-gu" },
+  { kr: "서대문구 신촌동", en: "Sinchon-dong, Seodaemun-gu" },
+  { kr: "서대문구 연희동", en: "Yeonhui-dong, Seodaemun-gu" },
+  { kr: "서대문구 홍은동", en: "Hongeun-dong, Seodaemun-gu" },
+  { kr: "서대문구 창천동", en: "Changcheon-dong, Seodaemun-gu" },
+  { kr: "서대문구 남문동", en: "Nammun-dong, Seodaemun-gu" },
+  { kr: "서대문구 북문동", en: "Bukmun-dong, Seodaemun-gu" },
+  { kr: "서대문구 충현동", en: "Chunghyeon-dong, Seodaemun-gu" },
 
   // 동대문구 (Dongdaemun-gu)
-  "동대문구 신설동",
-  "동대문구 용두동",
-  "동대문구 전농동",
-  "동대문구 답십리동",
-  "동대문구 장안동",
-  "동대문구 이문동",
-  "동대문구 제기동",
-  "동대문구 휘경동",
-  "동대문구 용신동",
+  { kr: "동대문구 신설동", en: "Sinseol-dong, Dongdaemun-gu" },
+  { kr: "동대문구 용두동", en: "Yongdu-dong, Dongdaemun-gu" },
+  { kr: "동대문구 전농동", en: "Jeonnong-dong, Dongdaemun-gu" },
+  { kr: "동대문구 답십리동", en: "Dapsimni-dong, Dongdaemun-gu" },
+  { kr: "동대문구 장안동", en: "Jangan-dong, Dongdaemun-gu" },
+  { kr: "동대문구 이문동", en: "Imun-dong, Dongdaemun-gu" },
+  { kr: "동대문구 제기동", en: "Jegi-dong, Dongdaemun-gu" },
+  { kr: "동대문구 휘경동", en: "Hwigyeong-dong, Dongdaemun-gu" },
+  { kr: "동대문구 용신동", en: "Yongsin-dong, Dongdaemun-gu" },
 
   // 성북구 (Seongbuk-gu)
-  "성북구 동선동",
-  "성북구 동소문동",
-  "성북구 보문동",
-  "성북구 삼선동",
-  "성북구 석관동",
-  "성북구 정릉동",
-  "성북구 길음동",
-  "성북구 종암동",
-  "성북구 안암동",
-  "성북구 돈암동",
+  { kr: "성북구 동선동", en: "Dongseon-dong, Seongbuk-gu" },
+  { kr: "성북구 동소문동", en: "Dongsomun-dong, Seongbuk-gu" },
+  { kr: "성북구 보문동", en: "Bomun-dong, Seongbuk-gu" },
+  { kr: "성북구 삼선동", en: "Samseon-dong, Seongbuk-gu" },
+  { kr: "성북구 석관동", en: "Seokgwan-dong, Seongbuk-gu" },
+  { kr: "성북구 정릉동", en: "Jeongneung-dong, Seongbuk-gu" },
+  { kr: "성북구 길음동", en: "Gireum-dong, Seongbuk-gu" },
+  { kr: "성북구 종암동", en: "Jongam-dong, Seongbuk-gu" },
+  { kr: "성북구 안암동", en: "Anam-dong, Seongbuk-gu" },
+  { kr: "성북구 돈암동", en: "Donam-dong, Seongbuk-gu" },
 ];
 
 const b = [
-  "쭈꾸미",
-  "곱창",
-  "국밥",
-  "삼겹살",
-  "치킨",
-  "피자",
-  "파스타",
-  "라멘",
-  "돈까스",
-  "초밥",
-  "짬뽕",
-  "짜장면",
-  "탕수육",
-  "마라탕",
-  "샤브샤브",
-  "부대찌개",
-  "김치찌개",
-  "삼계탕",
-  "갈비탕",
-  "냉면",
-  "빙수",
-  "떡볶이",
-  "순대",
-  "족발",
-  "보쌈",
-  "칼국수",
-  "수제비",
-  "만두",
-  "햄버거",
-  "스테이크",
-  "바비큐",
-  "곰탕",
-  "설렁탕",
-  "쌀국수",
-  "칼비빔국수",
-  "잔치국수",
-  "우동",
-  "튀김",
-  "모둠회",
-  "전골",
-  "찜닭",
-  "떡갈비",
-  "해물탕",
-  "아구찜",
-  "조개찜",
-  "간장게장",
-  "양념게장",
-  "김밥",
-  "비빔밥",
-  "된장찌개",
-  "육회",
-  "회덮밥",
-  "낙지볶음",
-  "감자탕",
-  "순두부찌개",
-  "고등어구이",
-  "갈치구이",
-  "오징어볶음",
-  "장어구이",
-  "닭도리탕",
-  "깐풍기",
-  "닭갈비",
-  "제육볶음",
-  "족발보쌈",
-  "홍어삼합",
-  "물회",
-  "육개장",
-  "토마토파스타",
-  "크림파스타",
-  "봉골레파스타",
-  "떡국",
-  "부침개",
-  "빈대떡",
-  "연어초밥",
-  "계란찜",
-  "순살치킨",
-  "닭꼬치",
-  "고추장불고기",
-  "달걀말이",
-  "미역국",
-  "뼈해장국",
-  "돼지갈비",
-  "오리백숙",
-  "소갈비",
-  "전복죽",
-  "김치볶음밥",
-  "잡채",
-  "찐만두",
-  "갈비찜",
-  "라볶이",
-  "동파육",
-  "오코노미야키",
-  "타코야끼",
-  "크로켓",
-  "타르트",
-  "티라미수",
-  "마카롱",
-  "크레페",
-  "샌드위치",
-  "호떡",
+  { kr: "쭈꾸미", en: "Jjukkumi" },
+  { kr: "곱창", en: "Gopchang" },
+  { kr: "국밥", en: "Gukbap" },
+  { kr: "삼겹살", en: "Samgyeopsal" },
+  { kr: "치킨", en: "Chicken" },
+  { kr: "피자", en: "Pizza" },
+  { kr: "파스타", en: "Pasta" },
+  { kr: "라멘", en: "Ramen" },
+  { kr: "돈까스", en: "Donkatsu" },
+  { kr: "초밥", en: "Sushi" },
+  { kr: "짬뽕", en: "Jjamppong" },
+  { kr: "짜장면", en: "Jajangmyeon" },
+  { kr: "탕수육", en: "Sweet and Sour Pork" },
+  { kr: "마라탕", en: "Mala Tang" },
+  { kr: "샤브샤브", en: "Shabu-Shabu" },
+  { kr: "부대찌개", en: "Budae Jjigae" },
+  { kr: "김치찌개", en: "Kimchi Stew" },
+  { kr: "삼계탕", en: "Samgyetang" },
+  { kr: "갈비탕", en: "Galbitang" },
+  { kr: "냉면", en: "Naengmyeon" },
+  { kr: "빙수", en: "Bingsu" },
+  { kr: "떡볶이", en: "Tteokbokki" },
+  { kr: "순대", en: "Sundae" },
+  { kr: "족발", en: "Jokbal" },
+  { kr: "보쌈", en: "Bossam" },
+  { kr: "칼국수", en: "Kalguksu" },
+  { kr: "수제비", en: "Sujebi" },
+  { kr: "만두", en: "Mandu" },
+  { kr: "햄버거", en: "Hamburger" },
+  { kr: "스테이크", en: "Steak" },
+  { kr: "바비큐", en: "Barbecue" },
+  { kr: "곰탕", en: "Gomtang" },
+  { kr: "설렁탕", en: "Seolleongtang" },
+  { kr: "쌀국수", en: "Rice Noodle Soup" },
+  { kr: "칼비빔국수", en: "Kalbi Bibim Guksu" },
+  { kr: "잔치국수", en: "Janchi Guksu" },
+  { kr: "우동", en: "Udon" },
+  { kr: "튀김", en: "Tempura" },
+  { kr: "모둠회", en: "Assorted Sashimi" },
+  { kr: "전골", en: "Jeongol" },
+  { kr: "찜닭", en: "Jjimdak" },
+  { kr: "떡갈비", en: "Tteokgalbi" },
+  { kr: "해물탕", en: "Seafood Stew" },
+  { kr: "아구찜", en: "Braised Anglerfish" },
+  { kr: "조개찜", en: "Steamed Clams" },
+  { kr: "간장게장", en: "Soy Sauce Marinated Crab" },
+  { kr: "양념게장", en: "Spicy Marinated Crab" },
+  { kr: "김밥", en: "Gimbap" },
+  { kr: "비빔밥", en: "Bibimbap" },
+  { kr: "된장찌개", en: "Doenjang Jjigae" },
+  { kr: "육회", en: "Yukhoe" },
+  { kr: "회덮밥", en: "Hwedupbap" },
+  { kr: "낙지볶음", en: "Stir-fried Octopus" },
+  { kr: "감자탕", en: "Gamjatang" },
+  { kr: "순두부찌개", en: "Sundubu Jjigae" },
+  { kr: "고등어구이", en: "Grilled Mackerel" },
+  { kr: "갈치구이", en: "Grilled Hairtail" },
+  { kr: "오징어볶음", en: "Stir-fried Squid" },
+  { kr: "장어구이", en: "Grilled Eel" },
+  { kr: "닭도리탕", en: "Dakdoritang" },
+  { kr: "깐풍기", en: "Spicy Fried Chicken" },
+  { kr: "닭갈비", en: "Dakgalbi" },
+  { kr: "제육볶음", en: "Stir-fried Pork" },
+  { kr: "족발보쌈", en: "Jokbal & Bossam" },
+  { kr: "홍어삼합", en: "Hongeo Samhap" },
+  { kr: "물회", en: "Mulhoe" },
+  { kr: "육개장", en: "Yukgaejang" },
+  { kr: "토마토파스타", en: "Tomato Pasta" },
+  { kr: "크림파스타", en: "Cream Pasta" },
+  { kr: "봉골레파스타", en: "Vongole Pasta" },
+  { kr: "떡국", en: "Rice Cake Soup" },
+  { kr: "부침개", en: "Buchimgae" },
+  { kr: "빈대떡", en: "Bindaetteok" },
+  { kr: "연어초밥", en: "Salmon Sushi" },
+  { kr: "계란찜", en: "Steamed Egg" },
+  { kr: "순살치킨", en: "Boneless Chicken" },
+  { kr: "닭꼬치", en: "Chicken Skewer" },
+  { kr: "고추장불고기", en: "Gochujang Bulgogi" },
+  { kr: "달걀말이", en: "Rolled Egg" },
+  { kr: "미역국", en: "Seaweed Soup" },
+  { kr: "뼈해장국", en: "Bone Soup" },
+  { kr: "돼지갈비", en: "Pork Ribs" },
+  { kr: "오리백숙", en: "Duck Soup" },
+  { kr: "소갈비", en: "Beef Short Ribs" },
+  { kr: "전복죽", en: "Abalone Porridge" },
+  { kr: "김치볶음밥", en: "Kimchi Fried Rice" },
+  { kr: "잡채", en: "Japchae" },
+  { kr: "찐만두", en: "Steamed Dumplings" },
+  { kr: "갈비찜", en: "Braised Short Ribs" },
+  { kr: "라볶이", en: "Rabokki" },
+  { kr: "동파육", en: "Dongpo Pork" },
+  { kr: "오코노미야키", en: "Okonomiyaki" },
+  { kr: "타코야끼", en: "Takoyaki" },
+  { kr: "크로켓", en: "Croquette" },
+  { kr: "타르트", en: "Tart" },
+  { kr: "티라미수", en: "Tiramisu" },
+  { kr: "마카롱", en: "Macaron" },
+  { kr: "크레페", en: "Crepe" },
+  { kr: "샌드위치", en: "Sandwich" },
+  { kr: "호떡", en: "Hotteok" },
 ];
 
 const maxResults = 3; // 원하는 결과 수 (사용자가 설정)
 const maxAttempts = 5; // 최대 시도 횟수
 
+// getRandomKeyword: 한글 검색어와 영어 정보(locationEn, foodEn)를 함께 생성
 function getRandomKeyword() {
-  const randomLocation = a[Math.floor(Math.random() * a.length)];
-  const randomFood = b[Math.floor(Math.random() * b.length)];
-  return `${randomLocation} ${randomFood}`;
+  const randomLocIndex = Math.floor(Math.random() * a.length);
+  const randomFoodIndex = Math.floor(Math.random() * b.length);
+
+  const locationKr = a[randomLocIndex].kr;
+  const locationEn = a[randomLocIndex].en;
+  const foodKr = b[randomFoodIndex].kr;
+  const foodEn = b[randomFoodIndex].en;
+
+  return {
+    keyword: `${locationKr} ${foodKr}`,
+    keywordEn: `${locationEn} ${foodEn}`,
+    locationEn: locationEn,
+    foodEn: foodEn,
+  };
 }
 
 async function makeRequest(start, display, searchQuery) {
@@ -272,19 +284,15 @@ async function getAllResults(searchQuery) {
     if (response && response[0].data.businesses.items) {
       const items = response[0].data.businesses.items.filter(
         (item) => item.imageUrl
-      ); // 이미지가 있는 항목만 필터링
-      if (items.length === 0) {
-        break; // 더 이상 결과가 없으면 루프 종료
-      }
+      );
+      if (items.length === 0) break;
       allResults.push(...items);
-      start += display; // 다음 페이지로 이동
+      start += display;
     } else {
       console.log("Error in response or no more results");
       break;
     }
-
-    // 1~2초 사이의 랜덤한 시간 동안 대기
-    const sleepTime = Math.random() * 1000 + 1000; // 1000 ~ 2000 밀리초
+    const sleepTime = Math.random() * 1000 + 1000;
     console.log(`Waiting for ${sleepTime / 1000} seconds...`);
     await new Promise((resolve) => setTimeout(resolve, sleepTime));
   }
@@ -298,13 +306,25 @@ function safeDecodeURIComponent(str) {
     return decodeURIComponent(str);
   } catch (e) {
     console.error(`Failed to decode: ${str}`);
+    return str;
+  }
+}
+
+function safeDecodeURIComponent(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch (e) {
+    console.error(`Failed to decode: ${str}`);
     return str; // 디코딩에 실패하면 원래 문자열을 반환
   }
 }
 
-function processResults(results, searchQuery) {
+// processResults: 결과에 keyword, locationEn, foodEn 추가
+function processResults(results, keyword, locationEn, foodEn) {
   return results.map((item, index) => ({
-    keyword: searchQuery,
+    keyword: keyword,
+    locationEn: locationEn,
+    foodEn: foodEn,
     id: item.id,
     name: safeDecodeURIComponent(item.name),
     normalizedName: safeDecodeURIComponent(item.normalizedName),
@@ -325,19 +345,25 @@ function processResults(results, searchQuery) {
   }));
 }
 
+// attemptSearch: 검색어와 영어 정보를 함께 전달하여 결과 처리
 async function attemptSearch() {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const searchQuery = getRandomKeyword();
-    console.log(`Attempt ${attempt}: Searching for "${searchQuery}"`);
+    const { keyword, locationEn, foodEn } = getRandomKeyword();
+    console.log(`Attempt ${attempt}: Searching for "${keyword}"`);
 
-    const results = await getAllResults(searchQuery);
+    const results = await getAllResults(keyword);
     if (results.length > 0) {
       const randomResults = [];
       while (randomResults.length < maxResults && results.length > 0) {
         const randomIndex = Math.floor(Math.random() * results.length);
-        randomResults.push(results.splice(randomIndex, 1)[0]); // 랜덤하게 선택하고 결과에서 제거
+        randomResults.push(results.splice(randomIndex, 1)[0]);
       }
-      const processedResults = processResults(randomResults, searchQuery);
+      const processedResults = processResults(
+        randomResults,
+        keyword,
+        locationEn,
+        foodEn
+      );
 
       const fileName = `result.json`;
       fs.writeFileSync(fileName, JSON.stringify(processedResults, null, 2));
@@ -346,6 +372,9 @@ async function attemptSearch() {
       processedResults.forEach((item) => {
         console.log(`순위: ${item.rank}`);
         console.log(`검색어: ${item.keyword}`);
+        console.log(`검색어영문: ${item.keywordEn}`);
+        console.log(`영문 지역(locationEn): ${item.locationEn}`);
+        console.log(`영문 음식(foodEn): ${item.foodEn}`);
         console.log(`이름: ${item.name}`);
         console.log(`카테고리: ${item.category}`);
         console.log(`주소: ${item.roadAddress}`);
@@ -353,7 +382,7 @@ async function attemptSearch() {
         console.log(`전화번호: ${item.virtualPhone || item.phone || "없음"}`);
         console.log();
       });
-      return; // 성공적으로 결과를 얻었으면 종료
+      return;
     }
 
     console.log("No results found, trying a new keyword...");

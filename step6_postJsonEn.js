@@ -11,15 +11,27 @@ const POSTS_FILE = path.join(__dirname, "posts.json");
 // result.json 파일 읽기 및 파싱
 const resultData = JSON.parse(fs.readFileSync(RESULT_FILE, "utf8"));
 
-// 키워드 추출 및 분리
-const keywordItem = Object.values(resultData).find((item) => item.keyword);
-const keyword = keywordItem ? keywordItem.keyword : "";
-const [location, foodName] = keyword.split(" ");
+// resultData는 results.json 파일에서 읽어온 데이터입니다.
+// 결과 JSON이 배열이 아닐 경우 배열로 변환합니다.
+const restaurants = Array.isArray(resultData)
+  ? resultData
+  : Object.values(resultData);
 
-// 유효한 keyword를 가진 항목 수 계산
-const restaurantCount = Object.values(resultData).filter(
-  (item) => item.keyword
-).length;
+const locationItem = restaurants.find(
+  (item) => item.locationEn && item.locationEn.trim() !== ""
+);
+const foodItem = restaurants.find(
+  (item) => item.foodEn && item.foodEn.trim() !== ""
+);
+
+const location = locationItem ? locationItem.locationEn : "";
+const foodName = foodItem ? foodItem.foodEn : "";
+
+const restaurantCount = restaurants.length;
+
+console.log("지역:", location);
+console.log("음식명:", foodName);
+console.log("레스토랑 수:", restaurantCount);
 
 const outputData = JSON.parse(fs.readFileSync(OUTPUT_FILE, "utf8"));
 
